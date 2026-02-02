@@ -4,7 +4,7 @@ Real-time light-speed delay calculator between celestial bodies.
 
 **How long does light take to travel from Earth to Mars right now?**
 
-**Live at [spacedelay.pages.dev](https://spacedelay.pages.dev)**
+**Live at [spacedelay.com](https://spacedelay.com)**
 
 ## Features
 
