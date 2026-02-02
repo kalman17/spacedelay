@@ -1,5 +1,17 @@
-/app.js
-  Cache-Control: no-cache
+# HTML - never cache
+/
+  Cache-Control: no-cache, no-store, must-revalidate
 
-/style.css
-  Cache-Control: no-cache
+/*.html
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# Static assets - short cache with revalidation
+/*.css
+  Cache-Control: public, max-age=0, must-revalidate
+
+/*.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Orbital data - cache for 1 hour
+/orbital-data.json
+  Cache-Control: public, max-age=3600
