@@ -428,26 +428,20 @@ function renderMap(timestamp) {
 }
 
 /**
- * Convert AU position to canvas coordinates with sqrt scaling on RADIUS
- * This preserves circular/elliptical orbit shapes while compressing distances
+ * Convert AU position to canvas coordinates with linear scaling
+ * This preserves true orbital ratios (Mercury at ~53% of Venus, not ~73%)
  */
 function toCanvasCoords(posAU, width, height) {
   const centerX = width / 2;
   const centerY = height / 2;
 
-  // Scale factor
-  const scale = Math.min(width, height) / 3.5;
-
-  // Convert to polar coordinates
-  const r = Math.sqrt(posAU.x * posAU.x + posAU.y * posAU.y);
-  const theta = Math.atan2(posAU.y, posAU.x);
-
-  // Apply sqrt scaling to radius only (preserves angle/shape)
-  const scaledR = Math.sqrt(r) * scale;
+  // Linear scale - divide by max orbit radius (Ceres ~2.8 AU) with padding
+  const maxOrbitAU = 3.0;  // Ceres + margin
+  const scale = Math.min(width, height) / 2 / maxOrbitAU * 0.9;  // 90% to leave margin
 
   return {
-    x: centerX + scaledR * Math.cos(theta),
-    y: centerY - scaledR * Math.sin(theta)  // Flip Y for screen coords
+    x: centerX + posAU.x * scale,
+    y: centerY - posAU.y * scale  // Flip Y for screen coords
   };
 }
 
