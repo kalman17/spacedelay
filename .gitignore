@@ -27,3 +27,7 @@ dist/
 .env
 .env.local
 .env.*.local
+
+# private files
+TODO.md
+CLAUDE.md
