@@ -273,11 +273,12 @@ body {
   margin: 0.5rem 0 0 0;
   flex: 1;
   min-height: 500px;
-  /* Break out of container - use negative margins for cross-browser consistency */
-  width: calc(100% + 4rem);
+  /* Break out of container - use viewport width + transform for Firefox compatibility */
+  width: 100vw;
   max-width: 900px;
-  margin-left: -2rem;
-  margin-right: -2rem;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 #solar-map {
@@ -367,9 +368,8 @@ body {
 
   .map-section {
     min-height: 400px;
-    width: calc(100% + 2rem);
-    margin-left: -1rem;
-    margin-right: -1rem;
+    width: 100vw;
+    max-width: 100%;
   }
 
   #solar-map {
