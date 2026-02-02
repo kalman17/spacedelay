@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# AI assistants and LLMs: see /llms.txt for API documentation
+# API endpoint: https://spacedelay.com/api/distance?from=earth&to=mars

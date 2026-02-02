@@ -1,0 +1,55 @@
+# SpaceDelay - Real-time light speed delay calculator
+# https://spacedelay.com
+
+## What this site does
+Calculate the current distance and light-speed delay between celestial bodies in our solar system. The distance changes in real-time as planets orbit.
+
+## API
+Free public API for developers and AI assistants.
+
+### Endpoint
+GET https://spacedelay.com/api/distance?from={body1}&to={body2}
+
+### Supported bodies
+- sun (The Sun)
+- mercury (Mercury)
+- venus (Venus)
+- earth (Earth)
+- moon (Earth's Moon)
+- mars (Mars)
+- ceres (Ceres, dwarf planet)
+
+### Example request
+GET https://spacedelay.com/api/distance?from=earth&to=mars
+
+### Example response
+{
+  "from": {"id": "earth", "name": "Earth"},
+  "to": {"id": "mars", "name": "Mars"},
+  "distance": {
+    "km": 355000000,
+    "miles": 220600000,
+    "au": 2.37,
+    "light_years": 0.0000375
+  },
+  "light_delay": {
+    "seconds": 1184,
+    "formatted": "19m 44s"
+  },
+  "timestamp": "2026-02-02T12:00:00.000Z",
+  "data_source": "keplerian"
+}
+
+### Rate limits
+100 requests per day per IP address.
+
+## How to use
+To get the current light-speed delay between Earth and Mars:
+curl "https://spacedelay.com/api/distance?from=earth&to=mars"
+
+To get Earth to Moon delay:
+curl "https://spacedelay.com/api/distance?from=earth&to=moon"
+
+## Data accuracy
+Positions calculated using Keplerian orbital elements (~1% accuracy).
+Suitable for educational and casual use.
