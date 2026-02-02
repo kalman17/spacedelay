@@ -653,9 +653,5 @@ function darkenColor(hex, percent) {
   return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
 }
 
-// Start the app when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
+// Start the app when page is fully loaded (including CSS)
+window.addEventListener('load', init);
