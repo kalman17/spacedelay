@@ -29,5 +29,4 @@ dist/
 .env.*.local
 
 # private files
-TODO.md
 CLAUDE.md
