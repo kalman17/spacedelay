@@ -437,7 +437,7 @@ function toCanvasCoords(posAU, width, height) {
 
   // Linear scale - divide by max orbit radius (Ceres ~2.8 AU) with padding
   const maxOrbitAU = 3.0;  // Ceres + margin
-  const scale = Math.min(width, height) / 2 / maxOrbitAU * 0.9;  // 90% to leave margin
+  const scale = Math.min(width, height) / 2 / maxOrbitAU * 1.0;  // 95% to leave small margin
 
   return {
     x: centerX + posAU.x * scale,
