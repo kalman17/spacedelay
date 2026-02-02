@@ -8,7 +8,7 @@ Free API for calculating light-speed delay between celestial bodies.
 https://spacedelay.com/api
 ```
 
-## Endpoints
+## Endpoint
 
 ### GET /distance
 
@@ -107,7 +107,7 @@ Positions are calculated using Keplerian orbital elements, which provide approxi
 
 ## Usage Examples
 
-### JavaScript (fetch)
+### JavaScript
 
 ```javascript
 const response = await fetch('https://spacedelay.com/api/distance?from=earth&to=mars');
@@ -115,7 +115,7 @@ const data = await response.json();
 console.log(`Light delay to Mars: ${data.light_delay.formatted}`);
 ```
 
-### Python (requests)
+### Python
 
 ```python
 import requests

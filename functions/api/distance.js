@@ -10,6 +10,7 @@ const KM_TO_LY = 1 / 9.461e12;
 const KM_TO_MILES = 0.621371;
 const DEG_TO_RAD = Math.PI / 180;
 const J2000_EPOCH = Date.UTC(2000, 0, 1, 12, 0, 0);
+const RATE_LIMIT = 100;
 
 // Orbital data (embedded for serverless function)
 const BODIES = {
@@ -73,7 +74,7 @@ const BODIES = {
  * Main handler
  */
 export async function onRequest(context) {
-  const { request } = context;
+  const { request, env } = context;
   const url = new URL(request.url);
 
   // CORS headers
@@ -88,6 +89,21 @@ export async function onRequest(context) {
   // Handle CORS preflight
   if (request.method === 'OPTIONS') {
     return new Response(null, { headers });
+  }
+
+  // Rate limiting
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const rateLimit = await checkRateLimit(env, ip);
+  headers['X-RateLimit-Limit'] = String(RATE_LIMIT);
+  headers['X-RateLimit-Remaining'] = String(rateLimit.remaining);
+  headers['X-RateLimit-Reset'] = String(rateLimit.reset);
+
+  if (!rateLimit.allowed) {
+    return new Response(JSON.stringify({
+      error: 'Rate limit exceeded',
+      message: 'You have exceeded 100 requests today. Try again tomorrow.',
+      reset: rateLimit.reset
+    }), { status: 429, headers });
   }
 
   // Get parameters
@@ -142,6 +158,35 @@ export async function onRequest(context) {
   };
 
   return new Response(JSON.stringify(response, null, 2), { headers });
+}
+
+/**
+ * Check and update rate limit using KV
+ */
+async function checkRateLimit(env, ip) {
+  const today = new Date().toISOString().slice(0, 10);
+  const key = `ratelimit:${ip}:${today}`;
+  const tomorrow = new Date();
+  tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+  tomorrow.setUTCHours(0, 0, 0, 0);
+  const reset = Math.floor(tomorrow.getTime() / 1000);
+
+  // Skip rate limiting if no KV binding (local dev)
+  if (!env.RATE_LIMIT_KV) {
+    return { allowed: true, remaining: RATE_LIMIT, reset };
+  }
+
+  try {
+    const count = parseInt(await env.RATE_LIMIT_KV.get(key) || '0', 10);
+    if (count >= RATE_LIMIT) {
+      return { allowed: false, remaining: 0, reset };
+    }
+    await env.RATE_LIMIT_KV.put(key, String(count + 1), { expirationTtl: 86400 });
+    return { allowed: true, remaining: RATE_LIMIT - count - 1, reset };
+  } catch (err) {
+    console.error('Rate limit error:', err);
+    return { allowed: true, remaining: RATE_LIMIT, reset };
+  }
 }
 
 /**

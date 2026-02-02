@@ -36,7 +36,11 @@ The app uses Keplerian orbital elements to calculate planet positions in real-ti
 
 ## API
 
-A free public API is coming soon for developers and AI assistants.
+Free public API for developers and AI assistants. See [API Documentation](docs/API.md).
+
+```bash
+curl "https://spacedelay.com/api/distance?from=earth&to=mars"
+```
 
 ## Development
 
@@ -46,11 +50,9 @@ git clone https://github.com/kalman17/spacedelay.git
 cd spacedelay
 
 # Run locally
-python3 -m http.server 8080 --directory public
-# or with Node.js
 npx wrangler pages dev public/
 
-# Open http://localhost:8080
+# Open http://localhost:8788
 ```
 
 ## Future Plans
