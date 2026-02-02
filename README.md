@@ -4,15 +4,18 @@ Real-time light-speed delay calculator between celestial bodies.
 
 **How long does light take to travel from Earth to Mars right now?**
 
+**Live at [spacedelay.pages.dev](https://spacedelay.pages.dev)**
+
 ## Features
 
 - Live UTC clock with real-time updates
 - Select any two bodies in the inner solar system
-- See distance in kilometers and light-years
+- See distance in kilometers and AU
 - Watch the light-speed delay change as planets orbit
 - Clean, dark theme inspired by NASA mission control
+- All calculations run in your browser - no server required
 
-## Supported Bodies (MVP)
+## Supported Bodies
 
 - Sun
 - Mercury
@@ -22,29 +25,9 @@ Real-time light-speed delay calculator between celestial bodies.
 - Mars
 - Ceres
 
-## Tech Stack
-
-- **Frontend:** Vanilla JS + CSS (no framework, zero dependencies)
-- **Hosting:** Cloudflare Pages (free)
-- **API:** Cloudflare Workers (free tier)
-- **Data:** Keplerian orbital elements (client-side calculations)
-
-## Development
-
-```bash
-# Clone the repo
-git clone https://github.com/kalman17/spacedelay.git
-cd spacedelay
-
-# Run locally (requires Node.js)
-npx wrangler pages dev public/
-
-# Open http://localhost:8788
-```
-
 ## How It Works
 
-The app uses Keplerian orbital elements to calculate planet positions in real-time, entirely in your browser. No external API calls needed for the core functionality.
+The app uses Keplerian orbital elements to calculate planet positions in real-time, entirely in your browser.
 
 1. Orbital elements define each body's path around the Sun
 2. JavaScript calculates current positions using basic orbital mechanics
@@ -53,18 +36,22 @@ The app uses Keplerian orbital elements to calculate planet positions in real-ti
 
 ## API
 
-A free API is available for developers:
+A free public API is coming soon for developers and AI assistants.
 
+## Development
+
+```bash
+# Clone the repo
+git clone https://github.com/kalman17/spacedelay.git
+cd spacedelay
+
+# Run locally
+python3 -m http.server 8080 --directory public
+# or with Node.js
+npx wrangler pages dev public/
+
+# Open http://localhost:8080
 ```
-GET /api/distance?from=earth&to=mars
-```
-
-See [API Documentation](docs/API.md) for details.
-
-## Cost
-
-- Domain: $10/year
-- Everything else: Free
 
 ## Future Plans
 
