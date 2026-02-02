@@ -268,6 +268,18 @@ body {
   margin-top: 0.25rem;
 }
 
+/* === Solar Map === */
+.map-section {
+  margin: 2rem 0;
+}
+
+#solar-map {
+  width: 100%;
+  height: 600px;
+  background: transparent;
+  display: block;
+}
+
 /* === Footer === */
 .footer {
   margin-top: auto;
@@ -343,5 +355,9 @@ body {
 
   .selector-arrow {
     transform: rotate(90deg);
+  }
+
+  #solar-map {
+    height: 500px;
   }
 }

@@ -16,6 +16,33 @@ let selectedFrom = 'earth';
 let selectedTo = 'mars';
 let updateInterval = null;
 
+// Map state
+let canvas, ctx;
+let pulseProgress = 0;  // 0 to 2 (0-1 = from→to, 1-2 = to→from)
+let lastFrameTime = 0;
+let cachedPositions = {};  // Cache positions to avoid recalculating every frame
+
+// Map constants
+const PULSE_PIXELS_PER_SECOND = 120;  // Constant speed in pixels per second
+const BODY_COLORS = {
+  sun: '#ffdd00',
+  mercury: '#b5b5b5',
+  venus: '#e6c87a',
+  earth: '#4a90d9',
+  moon: '#c0c0c0',
+  mars: '#d45f3c',
+  ceres: '#8a8a8a'
+};
+const BODY_SIZES = {
+  sun: 14,
+  mercury: 4,
+  venus: 6,
+  earth: 6,
+  moon: 3,
+  mars: 5,
+  ceres: 4
+};
+
 /**
  * Initialize the application
  */
@@ -35,6 +62,9 @@ async function init() {
     // Start the update loop
     update();
     updateInterval = setInterval(update, 1000);
+
+    // Initialize solar map
+    initMap();
 
   } catch (error) {
     console.error('Failed to initialize:', error);
@@ -98,6 +128,11 @@ function update() {
   // Update display
   updateDistanceDisplay(distanceKm, distanceAu);
   updateDelayDisplay(lightDelaySeconds);
+
+  // Update map positions
+  if (orbitalData) {
+    updateCachedPositions();
+  }
 }
 
 /**
@@ -276,6 +311,346 @@ function updateDelayDisplay(seconds) {
     <span class="delay-number">${number}</span>
     <span class="delay-unit">${unit}</span>
   `;
+}
+
+// ============================================
+// SOLAR MAP
+// ============================================
+
+/**
+ * Initialize the solar system map
+ */
+function initMap() {
+  canvas = document.getElementById('solar-map');
+  if (!canvas) return;
+
+  ctx = canvas.getContext('2d');
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  // Update cached positions initially
+  updateCachedPositions();
+
+  // Start render loop
+  requestAnimationFrame(renderMap);
+}
+
+/**
+ * Handle canvas resize
+ */
+function resizeCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.scale(dpr, dpr);
+}
+
+/**
+ * Update cached body positions (called every second from update())
+ */
+function updateCachedPositions() {
+  const now = new Date();
+  for (const body of Object.values(orbitalData.bodies)) {
+    const pos = calculatePosition(body.id, now);
+    cachedPositions[body.id] = {
+      x: pos.x / AU_TO_KM,  // Store in AU
+      y: pos.y / AU_TO_KM,
+      z: pos.z / AU_TO_KM
+    };
+  }
+}
+
+/**
+ * Get canvas position for a body (with Moon exaggeration)
+ */
+function getBodyCanvasPos(bodyId, width, height) {
+  const posAU = cachedPositions[bodyId];
+  if (!posAU) return null;
+
+  if (bodyId === 'moon') {
+    const earthPos = cachedPositions['earth'];
+    const earthCanvas = toCanvasCoords(earthPos, width, height);
+    const moonAngle = Math.atan2(posAU.y - earthPos.y, posAU.x - earthPos.x);
+    return {
+      x: earthCanvas.x + Math.cos(moonAngle) * 20,
+      y: earthCanvas.y - Math.sin(moonAngle) * 20
+    };
+  }
+  return toCanvasCoords(posAU, width, height);
+}
+
+/**
+ * Main map render loop (60fps)
+ */
+function renderMap(timestamp) {
+  if (!ctx) return;
+
+  const deltaTime = lastFrameTime ? (timestamp - lastFrameTime) / 1000 : 0;
+  lastFrameTime = timestamp;
+
+  // Get canvas dimensions
+  const width = canvas.getBoundingClientRect().width;
+  const height = canvas.getBoundingClientRect().height;
+
+  // Calculate pixel distance between selected bodies for constant speed pulse
+  const fromCanvas = getBodyCanvasPos(selectedFrom, width, height);
+  const toCanvas = getBodyCanvasPos(selectedTo, width, height);
+  if (fromCanvas && toCanvas) {
+    const dx = toCanvas.x - fromCanvas.x;
+    const dy = toCanvas.y - fromCanvas.y;
+    const pixelDist = Math.sqrt(dx * dx + dy * dy);
+    // Time for one-way trip
+    const oneWayTime = pixelDist / PULSE_PIXELS_PER_SECOND;
+    // Progress increment for this frame (0 to 2 is full round trip)
+    if (oneWayTime > 0) {
+      pulseProgress = (pulseProgress + deltaTime / oneWayTime) % 2;
+    }
+  }
+
+  // Clear canvas
+  ctx.clearRect(0, 0, width, height);
+
+  // Draw everything
+  drawOrbits(width, height);
+  drawBodies(width, height);
+  drawLightPulse(width, height);
+
+  requestAnimationFrame(renderMap);
+}
+
+/**
+ * Convert AU position to canvas coordinates with sqrt scaling on RADIUS
+ * This preserves circular/elliptical orbit shapes while compressing distances
+ */
+function toCanvasCoords(posAU, width, height) {
+  const centerX = width / 2;
+  const centerY = height / 2;
+
+  // Scale factor
+  const scale = Math.min(width, height) / 3.5;
+
+  // Convert to polar coordinates
+  const r = Math.sqrt(posAU.x * posAU.x + posAU.y * posAU.y);
+  const theta = Math.atan2(posAU.y, posAU.x);
+
+  // Apply sqrt scaling to radius only (preserves angle/shape)
+  const scaledR = Math.sqrt(r) * scale;
+
+  return {
+    x: centerX + scaledR * Math.cos(theta),
+    y: centerY - scaledR * Math.sin(theta)  // Flip Y for screen coords
+  };
+}
+
+/**
+ * Calculate orbital position for a given true anomaly (for drawing orbits)
+ */
+function calculateOrbitPoint(bodyId, trueAnomalyDeg) {
+  const body = orbitalData.bodies[bodyId];
+  const elements = body.orbital_elements;
+  if (!elements || !elements.a) return { x: 0, y: 0 };
+
+  const v = trueAnomalyDeg * DEG_TO_RAD;
+  const a = elements.a;
+  const e = elements.e;
+
+  // Distance from focus at this true anomaly
+  const r = a * (1 - e * e) / (1 + e * Math.cos(v));
+
+  // Position in orbital plane
+  const x_orb = r * Math.cos(v);
+  const y_orb = r * Math.sin(v);
+
+  // Get rotation angles (simplified - just use w_bar for longitude of perihelion)
+  const w_bar = (elements.w_bar || 0) * DEG_TO_RAD;
+  const omega = (elements.omega || 0) * DEG_TO_RAD;
+  const i = (elements.i || 0) * DEG_TO_RAD;
+  const w = w_bar - omega;
+
+  // Rotate to ecliptic coordinates
+  const cos_w = Math.cos(w);
+  const sin_w = Math.sin(w);
+  const cos_omega = Math.cos(omega);
+  const sin_omega = Math.sin(omega);
+  const cos_i = Math.cos(i);
+
+  const x_ecl = (cos_w * cos_omega - sin_w * sin_omega * cos_i) * x_orb +
+                (-sin_w * cos_omega - cos_w * sin_omega * cos_i) * y_orb;
+  const y_ecl = (cos_w * sin_omega + sin_w * cos_omega * cos_i) * x_orb +
+                (-sin_w * sin_omega + cos_w * cos_omega * cos_i) * y_orb;
+
+  return { x: x_ecl, y: y_ecl };
+}
+
+/**
+ * Draw orbital paths by plotting points (matches body positioning exactly)
+ */
+function drawOrbits(width, height) {
+  ctx.strokeStyle = '#2a2a35';
+  ctx.lineWidth = 1;
+
+  for (const body of Object.values(orbitalData.bodies)) {
+    if (body.id === 'sun') continue;
+    if (body.id === 'moon') continue;
+
+    const elements = body.orbital_elements;
+    if (!elements || !elements.a) continue;
+
+    ctx.beginPath();
+    for (let angle = 0; angle <= 360; angle += 3) {
+      const posAU = calculateOrbitPoint(body.id, angle);
+      const canvasPos = toCanvasCoords(posAU, width, height);
+
+      if (angle === 0) {
+        ctx.moveTo(canvasPos.x, canvasPos.y);
+      } else {
+        ctx.lineTo(canvasPos.x, canvasPos.y);
+      }
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+}
+
+/**
+ * Draw celestial bodies at their current positions
+ */
+function drawBodies(width, height) {
+  // Draw in order: outer to inner, so inner planets render on top
+  const drawOrder = ['ceres', 'mars', 'earth', 'moon', 'venus', 'mercury', 'sun'];
+
+  for (const bodyId of drawOrder) {
+    const body = orbitalData.bodies[bodyId];
+    if (!body) continue;
+
+    const canvasPos = getBodyCanvasPos(bodyId, width, height);
+    if (!canvasPos) continue;
+
+    const radius = BODY_SIZES[bodyId] || 4;
+    const color = BODY_COLORS[bodyId] || '#888';
+    const isSelected = bodyId === selectedFrom || bodyId === selectedTo;
+
+    // Draw selection glow
+    if (isSelected) {
+      const glowGradient = ctx.createRadialGradient(
+        canvasPos.x, canvasPos.y, radius,
+        canvasPos.x, canvasPos.y, radius + 12
+      );
+      glowGradient.addColorStop(0, 'rgba(0, 212, 255, 0.4)');
+      glowGradient.addColorStop(1, 'rgba(0, 212, 255, 0)');
+
+      ctx.beginPath();
+      ctx.arc(canvasPos.x, canvasPos.y, radius + 12, 0, Math.PI * 2);
+      ctx.fillStyle = glowGradient;
+      ctx.fill();
+    }
+
+    // Draw body with gradient for 3D effect
+    const gradient = ctx.createRadialGradient(
+      canvasPos.x - radius * 0.3, canvasPos.y - radius * 0.3, 0,
+      canvasPos.x, canvasPos.y, radius
+    );
+    gradient.addColorStop(0, lightenColor(color, 40));
+    gradient.addColorStop(0.7, color);
+    gradient.addColorStop(1, darkenColor(color, 30));
+
+    ctx.beginPath();
+    ctx.arc(canvasPos.x, canvasPos.y, radius, 0, Math.PI * 2);
+    ctx.fillStyle = gradient;
+    ctx.fill();
+  }
+}
+
+/**
+ * Draw the animated light pulse between selected bodies
+ */
+function drawLightPulse(width, height) {
+  const fromCanvas = getBodyCanvasPos(selectedFrom, width, height);
+  const toCanvas = getBodyCanvasPos(selectedTo, width, height);
+  if (!fromCanvas || !toCanvas) return;
+
+  const dx = toCanvas.x - fromCanvas.x;
+  const dy = toCanvas.y - fromCanvas.y;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  if (dist < 1) return;
+
+  // Calculate pulse position along line (direct connection, no offset)
+  // 0-1: traveling from -> to
+  // 1-2: traveling to -> from
+  const t = pulseProgress < 1 ? pulseProgress : 2 - pulseProgress;
+  const startPt = pulseProgress < 1 ? fromCanvas : toCanvas;
+  const endPt = pulseProgress < 1 ? toCanvas : fromCanvas;
+
+  const pulseX = startPt.x + (endPt.x - startPt.x) * t;
+  const pulseY = startPt.y + (endPt.y - startPt.y) * t;
+
+  // Direction of travel (normalized)
+  const dirX = (endPt.x - startPt.x) / dist;
+  const dirY = (endPt.y - startPt.y) / dist;
+
+  // Fade out as approaching destination (last 20%)
+  let opacity = 1;
+  if (t > 0.8) {
+    opacity = 1 - (t - 0.8) / 0.2;
+  }
+
+  // Draw a light-like streak/glow
+  // Outer glow (larger, more transparent, cyan tint)
+  const glowRadius = 12;
+  const glowGradient = ctx.createRadialGradient(pulseX, pulseY, 0, pulseX, pulseY, glowRadius);
+  glowGradient.addColorStop(0, `rgba(150, 220, 255, ${opacity * 0.4})`);
+  glowGradient.addColorStop(0.5, `rgba(100, 180, 255, ${opacity * 0.15})`);
+  glowGradient.addColorStop(1, 'rgba(100, 180, 255, 0)');
+
+  ctx.beginPath();
+  ctx.arc(pulseX, pulseY, glowRadius, 0, Math.PI * 2);
+  ctx.fillStyle = glowGradient;
+  ctx.fill();
+
+  // Inner bright core (small and sharp)
+  const coreGradient = ctx.createRadialGradient(pulseX, pulseY, 0, pulseX, pulseY, 3);
+  coreGradient.addColorStop(0, `rgba(255, 255, 255, ${opacity})`);
+  coreGradient.addColorStop(0.5, `rgba(200, 230, 255, ${opacity * 0.8})`);
+  coreGradient.addColorStop(1, `rgba(150, 200, 255, 0)`);
+
+  ctx.beginPath();
+  ctx.arc(pulseX, pulseY, 3, 0, Math.PI * 2);
+  ctx.fillStyle = coreGradient;
+  ctx.fill();
+
+  // Tiny bright center point
+  ctx.beginPath();
+  ctx.arc(pulseX, pulseY, 1, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+  ctx.fill();
+}
+
+/**
+ * Lighten a hex color
+ */
+function lightenColor(hex, percent) {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = Math.min(255, (num >> 16) + amt);
+  const G = Math.min(255, ((num >> 8) & 0x00FF) + amt);
+  const B = Math.min(255, (num & 0x0000FF) + amt);
+  return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+}
+
+/**
+ * Darken a hex color
+ */
+function darkenColor(hex, percent) {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = Math.max(0, (num >> 16) - amt);
+  const G = Math.max(0, ((num >> 8) & 0x00FF) - amt);
+  const B = Math.max(0, (num & 0x0000FF) - amt);
+  return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
 }
 
 // Start the app when DOM is ready
