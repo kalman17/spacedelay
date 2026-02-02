@@ -33,7 +33,7 @@ Real-time light-speed delay calculator between celestial bodies.
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/spacedelay.git
+git clone https://github.com/kalman17/spacedelay.git
 cd spacedelay
 
 # Run locally (requires Node.js)
