@@ -6,7 +6,7 @@
 // Constants
 const SPEED_OF_LIGHT_KM_S = 299792.458;
 const AU_TO_KM = 149597870.7;
-const KM_TO_LY = 1 / 9.461e12; // 1 light-year in km
+const KM_TO_AU = 1 / 149597870.7; // 1 AU in km
 const DEG_TO_RAD = Math.PI / 180;
 const J2000_EPOCH = Date.UTC(2000, 0, 1, 12, 0, 0); // Jan 1, 2000, 12:00 UTC
 
@@ -54,13 +54,13 @@ function populateSelectors() {
   bodies.forEach(body => {
     const optionFrom = document.createElement('option');
     optionFrom.value = body.id;
-    optionFrom.textContent = `${body.emoji} ${body.name}`;
+    optionFrom.textContent = body.name;
     optionFrom.selected = body.id === selectedFrom;
     fromSelect.appendChild(optionFrom);
 
     const optionTo = document.createElement('option');
     optionTo.value = body.id;
-    optionTo.textContent = `${body.emoji} ${body.name}`;
+    optionTo.textContent = body.name;
     optionTo.selected = body.id === selectedTo;
     toSelect.appendChild(optionTo);
   });
@@ -90,13 +90,13 @@ function update() {
 
   // Calculate distance
   const distanceKm = calculateDistance(pos1, pos2);
-  const distanceLy = distanceKm * KM_TO_LY;
+  const distanceAu = distanceKm * KM_TO_AU;
 
   // Calculate light delay
   const lightDelaySeconds = distanceKm / SPEED_OF_LIGHT_KM_S;
 
   // Update display
-  updateDistanceDisplay(distanceKm, distanceLy);
+  updateDistanceDisplay(distanceKm, distanceAu);
   updateDelayDisplay(lightDelaySeconds);
 }
 
@@ -232,19 +232,14 @@ function calculateDistance(pos1, pos2) {
 /**
  * Update the distance display
  */
-function updateDistanceDisplay(distanceKm, distanceLy) {
+function updateDistanceDisplay(distanceKm, distanceAu) {
   // Format distance in km with commas
   const kmFormatted = Math.round(distanceKm).toLocaleString('en-US');
   document.getElementById('distance-value').textContent = kmFormatted;
 
-  // Format light-years (scientific notation for small values)
-  let lyFormatted;
-  if (distanceLy < 0.0001) {
-    lyFormatted = distanceLy.toExponential(4);
-  } else {
-    lyFormatted = distanceLy.toFixed(6);
-  }
-  document.getElementById('distance-ly-value').textContent = lyFormatted;
+  // Format AU
+  const auFormatted = distanceAu.toFixed(4);
+  document.getElementById('distance-au-value').textContent = auFormatted;
 }
 
 /**

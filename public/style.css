@@ -219,13 +219,13 @@ body {
   margin-left: 0.5rem;
 }
 
-.distance-ly {
+.distance-au {
   font-family: var(--font-mono);
   font-size: 0.9rem;
   color: var(--text-secondary);
 }
 
-.distance-ly .unit {
+.distance-au .unit {
   margin-left: 0.25rem;
 }
 
