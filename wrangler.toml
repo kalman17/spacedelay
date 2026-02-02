@@ -1,0 +1,9 @@
+name = "spacedelay"
+compatibility_date = "2024-01-01"
+
+# Cloudflare Pages configuration
+# The 'public' directory contains static assets
+# The 'functions' directory contains API workers
+
+[site]
+bucket = "./public"

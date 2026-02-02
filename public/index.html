@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpaceDelay - Real-Time Light Speed Delay Between Planets</title>
+  <meta name="description" content="How long does it take light to travel from Earth to Mars? Find out the current light-speed delay between any two planets in our solar system.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="SpaceDelay - Light Speed Delay Calculator">
+  <meta property="og:description" content="Real-time light-speed delay between planets. Watch the distance change as planets orbit.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://spacedelay.com">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="logo">SPACEDELAY</h1>
+      <nav class="nav">
+        <a href="https://github.com/YOUR_USERNAME/spacedelay" target="_blank" rel="noopener" class="nav-link">GitHub</a>
+        <a href="/docs/API.md" class="nav-link">API</a>
+      </nav>
+    </header>
+
+    <!-- Time Display -->
+    <section class="time-section">
+      <div class="time-controls">
+        <button class="time-btn" disabled title="Date picker coming soon">
+          <span class="icon">&#128197;</span>
+        </button>
+        <button class="time-btn" disabled title="Time picker coming soon">
+          <span class="icon">&#9202;</span>
+        </button>
+      </div>
+      <div class="time-display">
+        <span id="current-date">2026-02-02</span>
+        <span id="current-time">00:00:00</span>
+        <span class="utc-label">UTC</span>
+      </div>
+      <div class="live-indicator">
+        <span class="live-dot"></span>
+        <span>LIVE</span>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Body Selectors -->
+    <section class="selectors">
+      <div class="selector-group">
+        <label for="body-from" class="sr-only">From body</label>
+        <select id="body-from" class="body-select">
+          <!-- Populated by JS -->
+        </select>
+      </div>
+      <div class="selector-arrow">
+        <span>&#8596;</span>
+      </div>
+      <div class="selector-group">
+        <label for="body-to" class="sr-only">To body</label>
+        <select id="body-to" class="body-select">
+          <!-- Populated by JS -->
+        </select>
+      </div>
+    </section>
+
+    <!-- Distance Display -->
+    <section class="distance-section">
+      <div class="distance-km">
+        <span id="distance-value">---</span>
+        <span class="unit">km</span>
+      </div>
+      <div class="distance-ly">
+        <span id="distance-ly-value">---</span>
+        <span class="unit">light-years</span>
+      </div>
+    </section>
+
+    <!-- Light Delay Display -->
+    <section class="delay-section">
+      <div class="delay-box">
+        <div class="delay-value" id="delay-display">
+          <span class="delay-number">--</span>
+          <span class="delay-unit">SECONDS</span>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p class="footer-text">Distance updates in real-time as planets orbit.</p>
+      <p class="footer-credits">
+        Data: <a href="https://ssd.jpl.nasa.gov/" target="_blank" rel="noopener">NASA JPL</a> |
+        <a href="https://github.com/YOUR_USERNAME/spacedelay" target="_blank" rel="noopener">Open Source</a>
+      </p>
+    </footer>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

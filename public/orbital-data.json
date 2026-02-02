@@ -1,0 +1,143 @@
+{
+  "epoch": "2000-01-01T12:00:00Z",
+  "epoch_jd": 2451545.0,
+  "speed_of_light_km_s": 299792.458,
+  "au_to_km": 149597870.7,
+  "bodies": {
+    "sun": {
+      "id": "sun",
+      "name": "Sun",
+      "emoji": "\u2600\ufe0f",
+      "type": "star",
+      "orbital_elements": null,
+      "notes": "Center of solar system - position is always (0, 0, 0)"
+    },
+    "mercury": {
+      "id": "mercury",
+      "name": "Mercury",
+      "emoji": "\u263f",
+      "type": "planet",
+      "orbital_elements": {
+        "a": 0.38709927,
+        "e": 0.20563593,
+        "i": 7.00497902,
+        "L": 252.25032350,
+        "w_bar": 77.45779628,
+        "omega": 48.33076593,
+        "rates": {
+          "a": 0.00000037,
+          "e": 0.00001906,
+          "i": -0.00594749,
+          "L": 149472.67411175,
+          "w_bar": 0.16047689,
+          "omega": -0.12534081
+        }
+      }
+    },
+    "venus": {
+      "id": "venus",
+      "name": "Venus",
+      "emoji": "\u2640\ufe0f",
+      "type": "planet",
+      "orbital_elements": {
+        "a": 0.72333566,
+        "e": 0.00677672,
+        "i": 3.39467605,
+        "L": 181.97909950,
+        "w_bar": 131.60246718,
+        "omega": 76.67984255,
+        "rates": {
+          "a": 0.00000390,
+          "e": -0.00004107,
+          "i": -0.00078890,
+          "L": 58517.81538729,
+          "w_bar": 0.00268329,
+          "omega": -0.27769418
+        }
+      }
+    },
+    "earth": {
+      "id": "earth",
+      "name": "Earth",
+      "emoji": "\ud83c\udf0d",
+      "type": "planet",
+      "orbital_elements": {
+        "a": 1.00000261,
+        "e": 0.01671123,
+        "i": -0.00001531,
+        "L": 100.46457166,
+        "w_bar": 102.93768193,
+        "omega": 0.0,
+        "rates": {
+          "a": 0.00000562,
+          "e": -0.00004392,
+          "i": -0.01294668,
+          "L": 35999.37244981,
+          "w_bar": 0.32327364,
+          "omega": 0.0
+        }
+      }
+    },
+    "moon": {
+      "id": "moon",
+      "name": "Moon",
+      "emoji": "\ud83c\udf19",
+      "type": "satellite",
+      "parent": "earth",
+      "orbital_elements": {
+        "a_km": 384400,
+        "e": 0.0549,
+        "i": 5.145,
+        "L": 218.32,
+        "w_bar": 318.15,
+        "omega": 125.08,
+        "period_days": 27.321661
+      },
+      "notes": "Orbits Earth, not Sun directly"
+    },
+    "mars": {
+      "id": "mars",
+      "name": "Mars",
+      "emoji": "\ud83d\udd34",
+      "type": "planet",
+      "orbital_elements": {
+        "a": 1.52371034,
+        "e": 0.09339410,
+        "i": 1.84969142,
+        "L": -4.55343205,
+        "w_bar": -23.94362959,
+        "omega": 49.55953891,
+        "rates": {
+          "a": 0.00001847,
+          "e": 0.00007882,
+          "i": -0.00813131,
+          "L": 19140.30268499,
+          "w_bar": 0.44441088,
+          "omega": -0.29257343
+        }
+      }
+    },
+    "ceres": {
+      "id": "ceres",
+      "name": "Ceres",
+      "emoji": "\u26ab",
+      "type": "dwarf_planet",
+      "orbital_elements": {
+        "a": 2.7675,
+        "e": 0.0758,
+        "i": 10.59,
+        "L": 153.94,
+        "w_bar": 73.59,
+        "omega": 80.39,
+        "rates": {
+          "a": 0.0,
+          "e": 0.0,
+          "i": 0.0,
+          "L": 78.19,
+          "w_bar": 0.0,
+          "omega": 0.0
+        }
+      }
+    }
+  }
+}
