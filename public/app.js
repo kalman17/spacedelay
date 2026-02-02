@@ -326,12 +326,17 @@ function initMap() {
 
   ctx = canvas.getContext('2d');
   resizeCanvas();
+
+  // Validate dimensions before starting render loop
+  // Firefox may return 0 before CSS is fully applied
+  const rect = canvas.getBoundingClientRect();
+  if (rect.width === 0 || rect.height === 0) {
+    requestAnimationFrame(initMap);
+    return;
+  }
+
   window.addEventListener('resize', resizeCanvas);
-
-  // Update cached positions initially
   updateCachedPositions();
-
-  // Start render loop
   requestAnimationFrame(renderMap);
 }
 
