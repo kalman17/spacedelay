@@ -64,8 +64,8 @@ const BODIES = {
     id: 'ceres',
     name: 'Ceres',
     orbital_elements: {
-      a: 2.7675, e: 0.0758, i: 10.59, L: 153.94, w_bar: 73.59, omega: 80.39,
-      rates: { a: 0, e: 0, i: 0, L: 78.19, w_bar: 0, omega: 0 }
+      a: 2.7658, e: 0.0786, i: 10.59, L: 153.94, w_bar: 73.1, omega: 80.7,
+      rates: { a: 0, e: 0, i: 0, L: 7816.17, w_bar: 0, omega: 0 }
     }
   }
 };
