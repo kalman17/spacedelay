@@ -55,6 +55,9 @@ async function init() {
     // Populate dropdowns
     populateSelectors();
 
+    // Initialize context sentence body names
+    updateContextNames();
+
     // Set up event listeners
     document.getElementById('body-from').addEventListener('change', onSelectionChange);
     document.getElementById('body-to').addEventListener('change', onSelectionChange);
@@ -97,11 +100,24 @@ function populateSelectors() {
 }
 
 /**
+ * Update context sentence body names
+ */
+function updateContextNames() {
+  let fromName = orbitalData.bodies[selectedFrom]?.name || selectedFrom;
+  let toName = orbitalData.bodies[selectedTo]?.name || selectedTo;
+  if (fromName === 'Sun') fromName = 'the Sun';
+  if (toName === 'Sun') toName = 'the Sun';
+  document.getElementById('context-from').textContent = fromName;
+  document.getElementById('context-to').textContent = toName;
+}
+
+/**
  * Handle selection change
  */
 function onSelectionChange() {
   selectedFrom = document.getElementById('body-from').value;
   selectedTo = document.getElementById('body-to').value;
+  updateContextNames();
   update();
 }
 

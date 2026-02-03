@@ -198,11 +198,24 @@ body {
   color: var(--text-secondary);
 }
 
+/* === Context Sentences === */
+.delay-context {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0.5rem 0;
+}
+
+.delay-context strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
 /* === NASA Countdown Clock Display === */
 .delay-section {
   display: flex;
   justify-content: center;
-  margin: 1rem 0 0.75rem 0;
+  margin: 0.5rem 0;
 }
 
 .nasa-clock {
