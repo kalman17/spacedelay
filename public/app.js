@@ -284,21 +284,41 @@ function updateDelayDisplay(seconds) {
   const hours = Math.floor(seconds / 3600);
   const mins = Math.floor((seconds % 3600) / 60);
   const secs = Math.floor(seconds % 60);
-  const tenths = Math.floor((seconds % 1) * 10);
+  const fraction = Math.floor((seconds % 1) * 100);
+  const tenths = Math.floor(fraction / 10);
+  const hundredths = fraction % 10;
 
-  // Format with leading zeros, cap hours at 99
-  const hh = String(Math.min(hours, 99)).padStart(2, '0');
-  const mm = String(mins).padStart(2, '0');
-  const ss = String(secs).padStart(2, '0');
+  // Helper to set digit with optional blank class
+  function setDigit(id, value, isBlank) {
+    const el = document.getElementById(id);
+    el.textContent = isBlank ? '8' : value;
+    el.classList.toggle('blank', isBlank);
+  }
 
-  // Update individual digit elements
-  document.getElementById('hour-1').textContent = hh[0];
-  document.getElementById('hour-2').textContent = hh[1];
-  document.getElementById('min-1').textContent = mm[0];
-  document.getElementById('min-2').textContent = mm[1];
-  document.getElementById('sec-1').textContent = ss[0];
-  document.getElementById('sec-2').textContent = ss[1];
-  document.getElementById('tenth').textContent = tenths;
+  // Helper to set separator blank state
+  function setSeparator(id, isBlank) {
+    const el = document.getElementById(id);
+    el.classList.toggle('blank', isBlank);
+  }
+
+  // Cascading blank logic
+  const hoursBlank = hours === 0;
+  const minsBlank = hours === 0 && mins === 0;
+  const secsLeadingBlank = hours === 0 && mins === 0 && secs < 10;
+
+  // Update digits
+  setDigit('hour-1', Math.floor(hours / 10) % 10, hours < 10);
+  setDigit('hour-2', hours % 10, hoursBlank);
+  setDigit('min-1', Math.floor(mins / 10), minsBlank || (hoursBlank && mins < 10));
+  setDigit('min-2', mins % 10, minsBlank);
+  setDigit('sec-1', Math.floor(secs / 10), secsLeadingBlank);
+  setDigit('sec-2', secs % 10, false);
+  setDigit('tenth', tenths, false);
+  setDigit('hundredth', hundredths, false);
+
+  // Update separators
+  setSeparator('sep-hm', hoursBlank);
+  setSeparator('sep-ms', minsBlank);
 }
 
 // ============================================

@@ -207,7 +207,7 @@ body {
 
 .nasa-clock {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 0.25rem;
   background: #0a0a0f;
   border: 3px solid #1a1a2e;
@@ -228,48 +228,87 @@ body {
 }
 
 .digit {
-  font-family: 'DSEG7 Classic', 'Courier New', monospace;
+  position: relative;
+  font-family: 'DSEG7-Classic', monospace;
   font-size: 3rem;
-  font-weight: 700;
-  color: #ffc800;
+  font-weight: normal;
+  color: #ffaa33;
   background: #0f0f18;
   padding: 0.25rem 0.4rem;
   border-radius: 4px;
   min-width: 1.8rem;
   text-align: center;
   text-shadow:
-    0 0 10px #ffc800,
-    0 0 20px rgba(255, 200, 0, 0.5),
-    0 0 30px rgba(255, 200, 0, 0.3);
+    0 0 8px rgba(255, 170, 50, 0.6),
+    0 0 15px rgba(255, 150, 30, 0.3);
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+  /* Ensure text renders on top */
+  isolation: isolate;
+}
+
+/* Ghost segments - dim "8" behind active digit */
+.digit::after {
+  content: '8';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.25rem 0.4rem;
+  font-family: 'DSEG7-Classic', monospace;
+  font-size: 3rem;
+  font-weight: normal;
+  color: #1a1a28;
+  text-shadow: none;
+  z-index: -1;
 }
 
 .digit-small {
-  font-size: 2rem;
-  padding: 0.15rem 0.3rem;
-  min-width: 1.2rem;
+  font-size: 2.2rem;
+  padding: 0.2rem 0.35rem;
+  min-width: 1.4rem;
+}
+
+.digit-small::after {
+  font-size: 2.2rem;
+  padding: 0.2rem 0.35rem;
+}
+
+/* Blank digit - show only ghost, no lit segments */
+.digit.blank {
+  color: transparent;
+  text-shadow: none;
+}
+
+/* Blank separator */
+.clock-separator.blank {
+  color: #1a1a28;
+  text-shadow: none;
 }
 
 .clock-separator {
-  font-family: 'DSEG7 Classic', 'Courier New', monospace;
+  font-family: 'DSEG7-Classic', monospace;
   font-size: 3rem;
-  font-weight: 700;
-  color: #ffc800;
-  text-shadow: 0 0 10px #ffc800;
+  font-weight: normal;
+  color: #ffcc44;
+  text-shadow:
+    0 0 10px rgba(255, 204, 68, 0.8),
+    0 0 20px rgba(255, 180, 50, 0.4);
   padding: 0 0.1rem;
-  align-self: flex-start;
-  margin-top: 0.25rem;
+  margin-bottom: 1.4rem;
 }
 
 .clock-separator-small {
-  font-size: 2rem;
-  align-self: center;
-  margin-top: 0.5rem;
+  font-size: 2.2rem;
+  margin-bottom: 1.4rem;
 }
 
 .clock-group-small {
-  align-self: flex-start;
-  margin-top: 0.25rem;
+  margin-bottom: 1.4rem;
+}
+
+.clock-group-small .digit-pair {
+  gap: 0.1rem;
 }
 
 .clock-label {
@@ -400,17 +439,32 @@ body {
     min-width: 1.2rem;
   }
 
+  .digit::after {
+    font-size: 1.8rem;
+    padding: 0.15rem 0.25rem;
+  }
+
   .digit-small {
-    font-size: 1.2rem;
-    min-width: 0.9rem;
+    font-size: 1.4rem;
+    min-width: 1rem;
+  }
+
+  .digit-small::after {
+    font-size: 1.4rem;
   }
 
   .clock-separator {
     font-size: 1.8rem;
+    margin-bottom: 1rem;
   }
 
   .clock-separator-small {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .clock-group-small {
+    margin-bottom: 1rem;
   }
 
   .clock-label {
