@@ -38,23 +38,29 @@
 
     <!-- Time Display -->
     <section class="time-section">
-      <div class="time-controls">
-        <button class="time-btn" disabled title="Date picker coming soon">
-          <span class="icon">&#128197;</span>
-        </button>
-        <button class="time-btn" disabled title="Time picker coming soon">
-          <span class="icon">&#9202;</span>
-        </button>
+      <div class="time-display-wrapper">
+        <!-- Normal date/time display (clickable to edit date) -->
+        <div class="time-display" id="time-display-normal">
+          <span id="current-date" class="clickable-date" title="Click to set custom date">2026-02-02</span>
+          <span id="current-time">00:00:00</span>
+          <span class="utc-label">UTC</span>
+        </div>
+        <!-- Date input mode (hidden by default) -->
+        <div class="date-input-wrapper" id="date-input-wrapper" style="display: none;">
+          <input type="text" id="date-year" class="date-input" maxlength="4" placeholder="YYYY" autocomplete="off">
+          <span class="date-separator">-</span>
+          <input type="text" id="date-month" class="date-input" maxlength="2" placeholder="MM" autocomplete="off">
+          <span class="date-separator">-</span>
+          <input type="text" id="date-day" class="date-input" maxlength="2" placeholder="DD" autocomplete="off">
+          <button class="date-submit-btn" id="date-submit-btn" title="Set date">&#10003;</button>
+          <button class="date-cancel-btn" id="date-cancel-btn" title="Cancel (Esc)">&#10005;</button>
+        </div>
+        <div class="date-error" id="date-error"></div>
       </div>
-      <div class="time-display">
-        <span id="current-date">2026-02-02</span>
-        <span id="current-time">00:00:00</span>
-        <span class="utc-label">UTC</span>
-      </div>
-      <div class="live-indicator">
+      <button class="live-indicator" id="live-button" title="Return to live time">
         <span class="live-dot"></span>
         <span>LIVE</span>
-      </div>
+      </button>
     </section>
 
     <hr class="divider">

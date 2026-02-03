@@ -146,6 +146,133 @@ body {
   50% { opacity: 0.4; }
 }
 
+/* === Clickable Date === */
+.clickable-date {
+  cursor: pointer;
+  transition: color 0.2s, text-decoration 0.2s;
+  border-bottom: 1px dashed transparent;
+}
+
+.clickable-date:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* === Date Input === */
+.time-display-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.date-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-mono);
+}
+
+.date-input {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  text-align: center;
+  padding: 0.3rem;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-dim);
+}
+
+#date-year {
+  width: 4.5rem;
+}
+
+#date-month,
+#date-day {
+  width: 2.5rem;
+}
+
+.date-separator {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.date-submit-btn,
+.date-cancel-btn {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.date-submit-btn:hover {
+  background: var(--success);
+  color: var(--bg-primary);
+  border-color: var(--success);
+}
+
+.date-cancel-btn:hover {
+  background: var(--highlight);
+  color: var(--bg-primary);
+  border-color: var(--highlight);
+}
+
+.date-error {
+  font-size: 0.75rem;
+  color: var(--highlight);
+  margin-top: 0.25rem;
+  min-height: 1rem;
+}
+
+/* === LIVE Button === */
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--success);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 0.35rem 0.6rem;
+  cursor: default;
+  transition: all 0.2s;
+}
+
+/* Inactive state - when viewing a fixed date */
+.live-indicator.inactive {
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-color: var(--border);
+}
+
+.live-indicator.inactive .live-dot {
+  background: var(--text-secondary);
+  animation: none;
+}
+
+.live-indicator.inactive:hover {
+  color: var(--success);
+  border-color: var(--success);
+}
+
+.live-indicator.inactive:hover .live-dot {
+  background: var(--success);
+}
+
 /* === Divider === */
 .divider {
   border: none;
@@ -435,6 +562,20 @@ body {
 
   .time-display {
     font-size: 1rem;
+  }
+
+  .date-input {
+    font-size: 1rem;
+    padding: 0.25rem;
+  }
+
+  #date-year {
+    width: 4rem;
+  }
+
+  #date-month,
+  #date-day {
+    width: 2.2rem;
   }
 
   .distance-km {
