@@ -198,43 +198,88 @@ body {
   color: var(--text-secondary);
 }
 
-/* === Delay Display === */
+/* === NASA Countdown Clock Display === */
 .delay-section {
   display: flex;
   justify-content: center;
   margin: 1rem 0 0.75rem 0;
 }
 
-.delay-box {
-  background: var(--bg-secondary);
-  border: 2px solid var(--accent);
-  border-radius: 12px;
-  padding: 1.25rem 3rem;
-  box-shadow: 0 0 30px var(--accent-dim);
+.nasa-clock {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+  background: #0a0a0f;
+  border: 3px solid #1a1a2e;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
 }
 
-.delay-value {
-  text-align: center;
+.clock-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.delay-number {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 3.5rem;
+.digit-pair {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.digit {
+  font-family: 'DSEG7 Classic', 'Courier New', monospace;
+  font-size: 3rem;
   font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.1em;
-  line-height: 1.2;
+  color: #ffc800;
+  background: #0f0f18;
+  padding: 0.25rem 0.4rem;
+  border-radius: 4px;
+  min-width: 1.8rem;
+  text-align: center;
+  text-shadow:
+    0 0 10px #ffc800,
+    0 0 20px rgba(255, 200, 0, 0.5),
+    0 0 30px rgba(255, 200, 0, 0.3);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-.delay-unit {
-  display: block;
-  font-size: 0.875rem;
+.digit-small {
+  font-size: 2rem;
+  padding: 0.15rem 0.3rem;
+  min-width: 1.2rem;
+}
+
+.clock-separator {
+  font-family: 'DSEG7 Classic', 'Courier New', monospace;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #ffc800;
+  text-shadow: 0 0 10px #ffc800;
+  padding: 0 0.1rem;
+  align-self: flex-start;
+  margin-top: 0.25rem;
+}
+
+.clock-separator-small {
+  font-size: 2rem;
+  align-self: center;
+  margin-top: 0.5rem;
+}
+
+.clock-group-small {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+}
+
+.clock-label {
+  font-family: var(--font-sans);
+  font-size: 0.6rem;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: #888;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  margin-top: 0.25rem;
+  margin-top: 0.4rem;
 }
 
 /* === Distance Display === */
@@ -344,12 +389,32 @@ body {
     font-size: 1.5rem;
   }
 
-  .delay-number {
-    font-size: 2.5rem;
+  .nasa-clock {
+    padding: 0.75rem 1rem;
+    gap: 0.15rem;
   }
 
-  .delay-box {
-    padding: 1rem 2rem;
+  .digit {
+    font-size: 1.8rem;
+    padding: 0.15rem 0.25rem;
+    min-width: 1.2rem;
+  }
+
+  .digit-small {
+    font-size: 1.2rem;
+    min-width: 0.9rem;
+  }
+
+  .clock-separator {
+    font-size: 1.8rem;
+  }
+
+  .clock-separator-small {
+    font-size: 1.2rem;
+  }
+
+  .clock-label {
+    font-size: 0.45rem;
   }
 
   .selectors {

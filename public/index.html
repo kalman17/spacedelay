@@ -19,6 +19,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- LED Clock Font -->
+  <link href="https://fonts.googleapis.com/css2?family=DSEG7+Classic:wght@700&display=swap" rel="stylesheet">
 
   <!-- Styles -->
   <link rel="stylesheet" href="/style.css">
@@ -76,12 +78,35 @@
       </div>
     </section>
 
-    <!-- Light Delay Display -->
+    <!-- Light Delay Display - NASA Countdown Clock Style -->
     <section class="delay-section">
-      <div class="delay-box">
-        <div class="delay-value" id="delay-display">
-          <span class="delay-number">--</span>
-          <span class="delay-unit">SECONDS</span>
+      <div class="nasa-clock" id="delay-display">
+        <div class="clock-group">
+          <div class="digit-pair">
+            <span class="digit" id="hour-1">0</span>
+            <span class="digit" id="hour-2">0</span>
+          </div>
+          <span class="clock-label">HOUR</span>
+        </div>
+        <span class="clock-separator">:</span>
+        <div class="clock-group">
+          <div class="digit-pair">
+            <span class="digit" id="min-1">0</span>
+            <span class="digit" id="min-2">0</span>
+          </div>
+          <span class="clock-label">MINUTE</span>
+        </div>
+        <span class="clock-separator">:</span>
+        <div class="clock-group">
+          <div class="digit-pair">
+            <span class="digit" id="sec-1">0</span>
+            <span class="digit" id="sec-2">0</span>
+          </div>
+          <span class="clock-label">SECOND</span>
+        </div>
+        <span class="clock-separator clock-separator-small">.</span>
+        <div class="clock-group clock-group-small">
+          <span class="digit digit-small" id="tenth">0</span>
         </div>
       </div>
     </section>

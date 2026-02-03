@@ -278,39 +278,27 @@ function updateDistanceDisplay(distanceKm, distanceAu) {
 }
 
 /**
- * Update the light delay display
+ * Update the light delay display (NASA countdown clock style)
  */
 function updateDelayDisplay(seconds) {
-  const delayDisplay = document.getElementById('delay-display');
+  const hours = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+  const tenths = Math.floor((seconds % 1) * 10);
 
-  let number, unit;
+  // Format with leading zeros, cap hours at 99
+  const hh = String(Math.min(hours, 99)).padStart(2, '0');
+  const mm = String(mins).padStart(2, '0');
+  const ss = String(secs).padStart(2, '0');
 
-  if (seconds < 1) {
-    // Milliseconds
-    number = Math.round(seconds * 1000);
-    unit = 'MILLISECONDS';
-  } else if (seconds < 60) {
-    // Seconds
-    number = seconds.toFixed(2);
-    unit = 'SECONDS';
-  } else if (seconds < 3600) {
-    // Minutes and seconds
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    number = `${mins}:${secs.toString().padStart(2, '0')}`;
-    unit = 'LIGHT-MINUTES';
-  } else {
-    // Hours, minutes
-    const hours = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    number = `${hours}:${mins.toString().padStart(2, '0')}`;
-    unit = 'LIGHT-HOURS';
-  }
-
-  delayDisplay.innerHTML = `
-    <span class="delay-number">${number}</span>
-    <span class="delay-unit">${unit}</span>
-  `;
+  // Update individual digit elements
+  document.getElementById('hour-1').textContent = hh[0];
+  document.getElementById('hour-2').textContent = hh[1];
+  document.getElementById('min-1').textContent = mm[0];
+  document.getElementById('min-2').textContent = mm[1];
+  document.getElementById('sec-1').textContent = ss[0];
+  document.getElementById('sec-2').textContent = ss[1];
+  document.getElementById('tenth').textContent = tenths;
 }
 
 // ============================================
