@@ -163,6 +163,17 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+}
+
+.date-error {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 0.75rem;
+  color: var(--highlight);
 }
 
 .date-input-wrapper {
@@ -225,13 +236,6 @@ body {
   background: var(--highlight);
   color: var(--bg-primary);
   border-color: var(--highlight);
-}
-
-.date-error {
-  font-size: 0.75rem;
-  color: var(--highlight);
-  margin-top: 0.25rem;
-  min-height: 1rem;
 }
 
 /* === LIVE Button === */
